@@ -1,2 +1,5 @@
 # Ignorar venv
 venv/
+
+# Ignorar txt de passos do programa
+Projeto de gerenciamento de tarefas.txt
