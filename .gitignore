@@ -3,3 +3,6 @@ venv/
 
 # Ignorar txt de passos do programa
 Projeto de gerenciamento de tarefas.txt
+
+# Ignorar cache
+__pycache__/
