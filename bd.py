@@ -98,15 +98,29 @@ def salvar_tarefas_json(conexao, arquivo):
 
 # Função para carregar tarefas do arquivo json
 def carregar_tarefas_json(arquivo):
+    try:
+        with open(arquivo, "r", encoding="utf-8") as file:
+            tarefas_json = file.read()
+            if not tarefas_json.strip():  # Verifica se o arquivo está vazio
+                return []
+            tarefas = json.loads(tarefas_json)
 
-    with open(arquivo, "r", encoding="utf-8") as file:
-        tarefas_json = file.read()
+            print('Tarefas incluídas nessa sessão:')
+            for tarefa in tarefas:
+                print(f'- {tarefa[1]} / {tarefa[2]}')
 
-    tarefas = json.loads(tarefas_json)
+            print()
+            print("Todas as suas tarefas:")
+            imprimir_tarefas()
+            return tarefas
 
-    print('Tarefas carregadas:')
-    for tarefa in tarefas:
-        print(f'- {tarefa[1]} / {tarefa[2]}')
+    except FileNotFoundError:
+        print("Arquivo não encontrado.")
+        return []
+
+    except json.JSONDecodeError:
+        print("Erro ao decodificar o JSON.")
+        return []
 
 
 # Função para limpar arquivo json quando encerrar o app
@@ -128,7 +142,10 @@ def apagar_banco_de_dados(conexao):
 # salvar_tarefas_json(conexao, 'tarefas.json')
 # carregar_tarefas_json("tarefas.json")
 # esvaziar_arquivo_json('tarefas.json')
-# imprimir_tarefas()
+# lista_id = visualizar_tarefas(conexao)
+# ids = [tarefa[0] for tarefa in lista_id]
+# print(ids)
+# print(visualizar_tarefas(conexao)[0][0])
 # print('*' * 20)
 # alterar_status(conexao, id=8, novo_status='concluido')
 # imprimir_tarefas()
