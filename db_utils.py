@@ -1,17 +1,18 @@
 import sqlite3
 import json
-# Script que cria e/ou manipula o banco de dados
+import os
 
 
 ################################# FUNÇÕES BD #########################################
 
-# Função para conectar no banco de dados
 def conectar_banco_dados(tarefas_db):
     conexao = sqlite3.connect(tarefas_db)
     return conexao
 
 
-# Função para criar tabela
+conexao = conectar_banco_dados('tarefas.db')
+
+
 def criar_tabela(conexao):
     cursor = conexao.cursor()
     cursor.execute('''
@@ -24,20 +25,13 @@ def criar_tabela(conexao):
     conexao.commit()
 
 
-# Conectar no banco de dados
-conexao = conectar_banco_dados('tarefas.db')
-
-
-# Criar tabela
 criar_tabela(conexao)
 
 
-# Lista para armazenar as IDs das tarefas inseridas durante a execução do programa
-tarefas_inseridas = []
-
 ################################# FUNÇÕES APP #########################################
 
-# Função para adicionar tarefas
+# Lista para armazenar as IDs das tarefas inseridas durante a execução do programa
+tarefas_inseridas = []
 
 
 def adicionar_tarefas(conexao, tarefa):
@@ -48,15 +42,10 @@ def adicionar_tarefas(conexao, tarefa):
     conexao.commit()
 
 
-# Função para visualizar tarefas
 def visualizar_tarefas(conexao):
     cursor = conexao.cursor()
     cursor.execute("SELECT * FROM Tarefas")
     return cursor.fetchall()
-# Variavel para imprimir tuplas do BD como lista
-# tarefas = visualizar_tarefas(conexao)
-
-# Função para imprimir as tarefas formatadas como lista
 
 
 def imprimir_tarefas():
@@ -65,7 +54,6 @@ def imprimir_tarefas():
         print(f'{tarefa[0]} - Tarefa: {tarefa[1]} / {tarefa[2]}')
 
 
-# Função para alterar status de tarefa
 def alterar_status(conexao, id, novo_status):
     cursor = conexao.cursor()
     cursor.execute("UPDATE Tarefas SET status = ? WHERE id = ?",
@@ -73,14 +61,12 @@ def alterar_status(conexao, id, novo_status):
     conexao.commit()
 
 
-# Função para remover tarefas
 def excluir_tarefa(conexao, id):
     cursor = conexao.cursor()
     cursor.execute("DELETE FROM Tarefas WHERE id = ?", (id,))
     conexao.commit()
 
 
-# Função para salvar tarefas no arquivo json
 def salvar_tarefas_json(conexao, arquivo):
     cursor = conexao.cursor()
     if tarefas_inseridas:
@@ -96,7 +82,6 @@ def salvar_tarefas_json(conexao, arquivo):
         []
 
 
-# Função para carregar tarefas do arquivo json
 def carregar_tarefas_json(arquivo):
     try:
         with open(arquivo, "r", encoding="utf-8") as file:
@@ -105,6 +90,7 @@ def carregar_tarefas_json(arquivo):
                 return []
             tarefas = json.loads(tarefas_json)
 
+            print('#' * 20)
             print('Tarefas incluídas nessa sessão:')
             for tarefa in tarefas:
                 print(f'- {tarefa[1]} / {tarefa[2]}')
@@ -112,6 +98,7 @@ def carregar_tarefas_json(arquivo):
             print()
             print("Todas as suas tarefas:")
             imprimir_tarefas()
+            print('#' * 20)
             return tarefas
 
     except FileNotFoundError:
@@ -123,32 +110,19 @@ def carregar_tarefas_json(arquivo):
         return []
 
 
-# Função para limpar arquivo json quando encerrar o app
 def esvaziar_arquivo_json(arquivo):
     with open(arquivo, 'w', encoding='utf-8') as f:
         f.write('')
 
 
-# Função criada para limpar o banco de dados. Utilize apenas se tiver CERTEZA que deseja excluir tudo da table Tarefas.
 def apagar_banco_de_dados(conexao):
     cursor = conexao.cursor()
     cursor.execute("DELETE FROM Tarefas")
     conexao.commit()
 
 
-# adicionar_tarefas(conexao, 'tarefa8')
-# adicionar_tarefas(conexao, 'tarefa9')
-# adicionar_tarefas(conexao, 'tarefa10')
-# salvar_tarefas_json(conexao, 'tarefas.json')
-# carregar_tarefas_json("tarefas.json")
-# esvaziar_arquivo_json('tarefas.json')
-# lista_id = visualizar_tarefas(conexao)
-# ids = [tarefa[0] for tarefa in lista_id]
-# print(ids)
-# print(visualizar_tarefas(conexao)[0][0])
-# print('*' * 20)
-# alterar_status(conexao, id=8, novo_status='concluido')
-# imprimir_tarefas()
-
-# Encerrar conexão
-# conexao.close()
+def limpar_tela():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
