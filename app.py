@@ -14,7 +14,7 @@ def escolha_usuario():
             if escolha in [1, 2, 3, 4, 5, 6]:
                 return escolha
             else:
-                print("Escolha inválida. Digite um número entre 1 e 5.")
+                print("Escolha inválida. Digite um número entre 1 e 6.")
         except:
             print("Por favor, utilize apenas números.")
 
